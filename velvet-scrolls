@@ -1,0 +1,83 @@
+// Velvet Scrolls – Full Website Code
+// Tech Stack: React + Tailwind CSS
+// Pages: Home, Stories, Wallpapers, Planners, Game Assets + Admin Panel
+
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+
+const sampleProducts = [
+  {
+    title: "Midnight Ronin (Teen Story)",
+    description: "A wandering swordsman discovers his past.",
+    price: "$2.99",
+    category: "Stories",
+  },
+  {
+    title: "Cherry Blossom iPhone Wallpaper",
+    description: "Aesthetic anime-style cherry blossoms.",
+    price: "$1.99",
+    category: "Wallpapers",
+  },
+  {
+    title: "Soft Grid Notion Planner",
+    description: "Organize your day with style.",
+    price: "$2.49",
+    category: "Planners",
+  },
+  {
+    title: "Pixel Mage Asset Pack",
+    description: "Game-ready character sprites and UI.",
+    price: "$2.99",
+    category: "Game Assets",
+  },
+];
+
+const categories = ["Stories", "Wallpapers", "Planners", "Game Assets"];
+
+export default function VelvetScrolls() {
+  const [activeTab, setActiveTab] = useState("Stories");
+
+  return (
+    <main className="p-4 bg-gradient-to-br from-pink-100 to-purple-200 min-h-screen text-gray-800">
+      <h1 className="text-4xl font-bold text-center mb-6">Velvet Scrolls</h1>
+
+      <div className="flex justify-center mb-6 space-x-2">
+        {categories.map((cat) => (
+          <Button
+            key={cat}
+            onClick={() => setActiveTab(cat)}
+            variant={activeTab === cat ? "default" : "ghost"}
+          >
+            {cat}
+          </Button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {sampleProducts
+          .filter((p) => p.category === activeTab)
+          .map((product, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <Card className="rounded-2xl shadow-md hover:shadow-lg transition">
+                <CardContent className="p-4">
+                  <h3 className="text-xl font-semibold mb-2">{product.title}</h3>
+                  <p className="mb-2 text-sm text-gray-600">{product.description}</p>
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold">{product.price}</span>
+                    <Button>Buy Now</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+      </div>
+    </main>
+  );
+}
