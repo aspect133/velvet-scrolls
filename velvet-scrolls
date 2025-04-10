@@ -1,4 +1,4 @@
-// Velvet Scrolls – Full Website Code
+// Velvet Scrolls – Full Website Code with Admin Panel + Stripe + PayPal
 // Tech Stack: React + Tailwind CSS
 // Pages: Home, Stories, Wallpapers, Planners, Game Assets + Admin Panel
 
@@ -38,6 +38,32 @@ const categories = ["Stories", "Wallpapers", "Planners", "Game Assets"];
 
 export default function VelvetScrolls() {
   const [activeTab, setActiveTab] = useState("Stories");
+  const [adminMode, setAdminMode] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    title: "",
+    description: "",
+    price: "",
+    category: "Stories",
+  });
+
+  const handleProductChange = (e) => {
+    const { name, value } = e.target;
+    setNewProduct((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const addProduct = () => {
+    if (newProduct.title && newProduct.price) {
+      sampleProducts.push({ ...newProduct });
+      setNewProduct({ title: "", description: "", price: "", category: "Stories" });
+    }
+  };
+
+  const handleBuy = (product) => {
+    // Dummy payment redirect logic
+    const price = product.price.replace("$", "");
+    alert(`Redirecting to payment gateway for ${product.title} ($${price})...`);
+    // Here you'd integrate Stripe/PayPal SDKs
+  };
 
   return (
     <main className="p-4 bg-gradient-to-br from-pink-100 to-purple-200 min-h-screen text-gray-800">
@@ -53,7 +79,57 @@ export default function VelvetScrolls() {
             {cat}
           </Button>
         ))}
+        <Button variant="outline" onClick={() => setAdminMode(!adminMode)}>
+          {adminMode ? "Exit Admin" : "Admin Panel"}
+        </Button>
       </div>
+
+      {adminMode && (
+        <div className="bg-white p-4 rounded-xl shadow-md mb-6 max-w-2xl mx-auto">
+          <h2 className="text-xl font-semibold mb-4">Add New Product</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <input
+              type="text"
+              name="title"
+              placeholder="Title"
+              value={newProduct.title}
+              onChange={handleProductChange}
+              className="p-2 rounded border"
+            />
+            <input
+              type="text"
+              name="description"
+              placeholder="Description"
+              value={newProduct.description}
+              onChange={handleProductChange}
+              className="p-2 rounded border"
+            />
+            <input
+              type="text"
+              name="price"
+              placeholder="$ Price"
+              value={newProduct.price}
+              onChange={handleProductChange}
+              className="p-2 rounded border"
+            />
+            <select
+              name="category"
+              value={newProduct.category}
+              onChange={handleProductChange}
+              className="p-2 rounded border"
+            >
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+          <Button className="mt-4" onClick={addProduct}>
+            Add Product
+          </Button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {sampleProducts
@@ -71,7 +147,7 @@ export default function VelvetScrolls() {
                   <p className="mb-2 text-sm text-gray-600">{product.description}</p>
                   <div className="flex justify-between items-center">
                     <span className="font-bold">{product.price}</span>
-                    <Button>Buy Now</Button>
+                    <Button onClick={() => handleBuy(product)}>Buy Now</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -81,3 +157,6 @@ export default function VelvetScrolls() {
     </main>
   );
 }
+    
+     
+          
